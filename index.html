@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORTOLA — Tarjima Platformasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-deep: #0d47a1;
+    --blue-primary: #1565c0;
+    --blue-light: #1976d2;
+    --blue-soft: #e3f2fd;
+    --blue-accent: #42a5f5;
+    --white: #ffffff;
+    --off-white: #f8faff;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --gray-800: #1e293b;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --orange: #f97316;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --shadow-sm: 0 2px 8px rgba(13,71,161,0.08);
+    --shadow-md: 0 8px 24px rgba(13,71,161,0.12);
+    --shadow-lg: 0 20px 60px rgba(13,71,161,0.18);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .dark {
+    --blue-soft: #0d2240;
+    --off-white: #0a1628;
+    --gray-100: #0f1e35;
+    --gray-200: #1a2d4a;
+    --gray-400: #64748b;
+    --gray-600: #94a3b8;
+    --gray-800: #e2e8f0;
+    --white: #e8f1ff;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--gray-800);
+    transition: var(--transition);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(13,71,161,0.08);
+    transition: var(--transition);
+  }
+  .dark nav { background: rgba(10,22,40,0.88); border-color: rgba(255,255,255,0.06); }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 36px; height: 36px; background: var(--blue-primary);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 20px;
+    color: var(--blue-primary);
+    letter-spacing: -0.5px;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 4px;
+    margin-left: auto; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--gray-600);
+    font-size: 14px; font-weight: 600;
+    padding: 8px 14px; border-radius: 10px;
+    transition: var(--transition); cursor: pointer;
+  }
+  .nav-links a:hover { color: var(--blue-primary); background: var(--blue-soft); }
+  .nav-right { display: flex; align-items: center; gap: 10px; margin-left: 16px; }
+  .lang-switcher {
+    display: flex; background: var(--gray-100);
+    border-radius: 10px; padding: 3px; gap: 2px;
+  }
+  .lang-btn {
+    padding: 5px 10px; border-radius: 7px; border: none;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    background: transparent; color: var(--gray-400);
+    transition: var(--transition); font-family: inherit;
+  }
+  .lang-btn.active {
+    background: var(--blue-primary); color: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .theme-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    border: 1.5px solid var(--gray-200); background: var(--gray-100);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: var(--transition); color: var(--gray-600);
+  }
+  .theme-btn:hover { border-color: var(--blue-primary); color: var(--blue-primary); }
+  .btn-nav-cta {
+    padding: 8px 18px; border-radius: 10px;
+    background: var(--blue-primary); color: #fff;
+    border: none; font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+    text-decoration: none; display: inline-block;
+  }
+  .btn-nav-cta:hover { background: var(--blue-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--gray-600); border-radius: 2px; transition: var(--transition);
+  }
+
+  /* ─── HERO ─────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 40%, #1976d2 70%, #1e88e5 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding: 120px 24px 80px;
+  }
+  .hero-bg-shapes {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .shape {
+    position: absolute; border-radius: 50%; opacity: 0.08;
+    background: white;
+    animation: float 8s ease-in-out infinite;
+  }
+  .shape:nth-child(1) { width: 400px; height: 400px; top: -100px; right: -80px; animation-delay: 0s; }
+  .shape:nth-child(2) { width: 200px; height: 200px; bottom: 100px; left: -40px; animation-delay: 2s; }
+  .shape:nth-child(3) { width: 150px; height: 150px; top: 200px; left: 10%; animation-delay: 4s; }
+  .shape:nth-child(4) { width: 80px; height: 80px; bottom: 200px; right: 15%; animation-delay: 1s; opacity: 0.12; }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+  .hero-content {
+    max-width: 900px; text-align: center; position: relative; z-index: 2;
+    animation: heroIn 0.8s ease both;
+  }
+  @keyframes heroIn {
+    from { opacity:0; transform: translateY(30px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 18px; border-radius: 50px;
+    color: rgba(255,255,255,0.95); font-size: 13px; font-weight: 600;
+    margin-bottom: 28px; animation: heroIn 0.8s ease 0.1s both;
+  }
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.7;transform:scale(1.3);} }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800; color: #fff;
+    line-height: 1.1; letter-spacing: -2px;
+    margin-bottom: 24px;
+    animation: heroIn 0.8s ease 0.2s both;
+  }
+  .hero h1 span { color: #90caf9; }
+  .hero p {
+    font-size: clamp(16px, 2vw, 20px); color: rgba(255,255,255,0.8);
+    max-width: 580px; margin: 0 auto 40px; line-height: 1.7;
+    animation: heroIn 0.8s ease 0.3s both;
+  }
+  .hero-cta {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    animation: heroIn 0.8s ease 0.4s both;
+  }
+  .btn-primary {
+    padding: 16px 36px; border-radius: 14px;
+    background: #fff; color: var(--blue-primary);
+    border: none; font-size: 16px; font-weight: 800;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+  .btn-secondary {
+    padding: 16px 36px; border-radius: 14px;
+    background: rgba(255,255,255,0.15); color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.35); font-size: 16px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+    backdrop-filter: blur(10px); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
+  .hero-stats {
+    display: flex; gap: 40px; justify-content: center;
+    margin-top: 60px; flex-wrap: wrap;
+    animation: heroIn 0.8s ease 0.5s both;
+  }
+  .hero-stat { text-align: center; color: #fff; }
+  .hero-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800;
+    display: block; line-height: 1;
+  }
+  .hero-stat-label { font-size: 13px; opacity: 0.7; margin-top: 6px; display: block; }
+  .hero-cards {
+    position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 12px;
+    animation: heroIn 0.8s ease 0.6s both;
+    opacity: 0.9;
+  }
+  .floating-card {
+    background: rgba(255,255,255,0.95); border-radius: 16px;
+    padding: 14px 18px; min-width: 200px;
+    box-shadow: var(--shadow-lg);
+    display: flex; align-items: center; gap: 12px;
+    animation: floatCard 4s ease-in-out infinite;
+  }
+  .floating-card:nth-child(2) { animation-delay: 1.5s; transform: translateX(20px); }
+  @keyframes floatCard {
+    0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);}
+  }
+  .fc-icon { font-size: 24px; flex-shrink: 0; }
+  .fc-info { flex: 1; }
+  .fc-title { font-size: 12px; font-weight: 700; color: var(--gray-800); }
+  .fc-sub { font-size: 11px; color: var(--gray-400); }
+  .fc-badge {
+    padding: 3px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; background: #dcfce7; color: #16a34a;
+  }
+
+  /* ─── SECTIONS ─────────────────────────────────── */
+  section { padding: 100px 24px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-tag {
+    display: inline-block; padding: 6px 16px; border-radius: 50px;
+    background: var(--blue-soft); color: var(--blue-primary);
+    font-size: 12px; font-weight: 800; letter-spacing: 0.8px;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+    letter-spacing: -1.5px; line-height: 1.15;
+    color: var(--gray-800); margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 17px; color: var(--gray-600); line-height: 1.7;
+    max-width: 560px;
+  }
+  .section-header { margin-bottom: 60px; }
+  .section-header.center { text-align: center; }
+  .section-header.center .section-sub { margin: 0 auto; }
+
+  /* ─── HOW IT WORKS ─────────────────────────────── */
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;
+  }
+  .step-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 32px 28px; border: 1.5px solid var(--gray-200);
+    transition: var(--transition); position: relative; overflow: hidden;
+  }
+  .step-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--blue-primary), var(--blue-accent));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .step-card:hover { border-color: var(--blue-primary); box-shadow: var(--shadow-md); transform: translateY(-4px); }
+  .step-card:hover::before { transform: scaleX(1); }
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px; font-weight: 800;
+    color: var(--blue-soft); line-height: 1;
+    margin-bottom: 16px;
+  }
+  .dark .step-num { color: rgba(21,101,192,0.3); }
+  .step-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--blue-soft); display: flex; align-items: center;
+    justify-content: center; font-size: 24px; margin-bottom: 20px;
+  }
+  .step-title { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--gray-800); }
+  .step-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
+
+  /* ─── SERVICES ─────────────────────────────────── */
+  #services { background: var(--gray-100); }
+  .dark #services { background: var(--gray-100); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+  }
+  .service-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 32px 28px; border: 1.5px solid var(--gray-200);
+    transition: var(--transition); cursor: pointer; position: relative;
+  }
+  .service-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-6px); border-color: transparent; }
+  .service-icon {
+    width: 64px; height: 64px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; margin-bottom: 20px;
+    transition: var(--transition);
+  }
+  .service-card:hover .service-icon { transform: scale(1.1) rotate(-5deg); }
+  .service-card.s1 .service-icon { background: #e0f2fe; }
+  .service-card.s2 .service-icon { background: #f0fdf4; }
+  .service-card.s3 .service-icon { background: #fef9c3; }
+  .service-card.s4 .service-icon { background: #fce7f3; }
+  .service-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; color: var(--gray-800); }
+  .service-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; margin-bottom: 20px; }
+  .service-price {
+    display: flex; align-items: baseline; gap: 4px;
+    margin-bottom: 20px;
+  }
+  .price-from { font-size: 12px; color: var(--gray-400); }
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800; color: var(--blue-primary);
+  }
+  .price-unit { font-size: 12px; color: var(--gray-400); }
+  .btn-service {
+    width: 100%; padding: 12px; border-radius: 12px;
+    background: var(--blue-soft); color: var(--blue-primary);
+    border: none; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+  }
+  .btn-service:hover { background: var(--blue-primary); color: #fff; }
+  .service-badge {
+    position: absolute; top: 20px; right: 20px;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; background: #fef9c3; color: #92400e;
+  }
+
+  /* ─── DASHBOARD ─────────────────────────────────── */
+  #dashboard { background: var(--off-white); }
+  .dashboard-wrapper {
+    background: var(--white); border-radius: var(--radius-xl);
+    overflow: hidden; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
+  }
+  .dashboard-header {
+    background: linear-gradient(135deg, var(--blue-deep), var(--blue-light));
+    padding: 32px 36px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
+  }
+  .dash-user { display: flex; align-items: center; gap: 16px; }
+  .dash-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: #fff;
+  }
+  .dash-name { font-size: 20px; font-weight: 800; color: #fff; }
+  .dash-level { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .dash-xp {
+    text-align: right; color: #fff;
+  }
+  .xp-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800; line-height: 1;
+  }
+  .xp-label { font-size: 12px; opacity: 0.7; }
+  .xp-bar-wrap {
+    width: 200px; height: 8px; background: rgba(255,255,255,0.2);
+    border-radius: 10px; margin-top: 8px; overflow: hidden;
+  }
+  .xp-bar {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    width: 68%; transition: width 1s ease;
+  }
+  .dashboard-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .dash-stat {
+    padding: 24px 28px; text-align: center;
+    border-right: 1px solid var(--gray-200);
+  }
+  .dash-stat:last-child { border-right: none; }
+  .dash-stat-icon { font-size: 28px; margin-bottom: 8px; }
+  .dash-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800; color: var(--blue-primary); line-height: 1;
+  }
+  .dash-stat-label { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+  .dashboard-path { padding: 40px 36px; }
+  .path-title { font-size: 18px; font-weight: 800; margin-bottom: 28px; color: var(--gray-800); }
+  .path-levels { display: flex; gap: 16px; flex-wrap: wrap; }
+  .level-node {
+    flex: 1; min-width: 140px; border-radius: var(--radius-md);
+    padding: 20px; text-align: center; border: 2px solid var(--gray-200);
+    position: relative; transition: var(--transition); cursor: pointer;
+  }
+  .level-node.unlocked { border-color: var(--blue-primary); background: var(--blue-soft); }
+  .level-node.completed { border-color: var(--green); background: #f0fdf4; }
+  .level-node.locked { opacity: 0.5; cursor: not-allowed; }
+  .level-node.active {
+    border-color: var(--blue-primary); background: var(--blue-primary);
+    color: #fff; transform: scale(1.05); box-shadow: var(--shadow-md);
+  }
+  .level-icon { font-size: 32px; margin-bottom: 10px; }
+  .level-name { font-size: 13px; font-weight: 800; }
+  .level-xp { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+  .level-check {
+    position: absolute; top: -8px; right: -8px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--green); color: #fff; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+  }
+  .path-connector {
+    display: flex; align-items: center; color: var(--gray-300); font-size: 18px;
+    flex-shrink: 0;
+  }
+  .achievements { padding: 0 36px 36px; }
+  .ach-title { font-size: 16px; font-weight: 800; margin-bottom: 20px; }
+  .badges-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .badge-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .badge-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; box-shadow: var(--shadow-sm);
+    transition: var(--transition); border: 3px solid transparent;
+  }
+  .badge-item:hover .badge-icon { transform: scale(1.1); border-color: var(--blue-primary); }
+  .badge-icon.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+  .badge-icon.silver { background: linear-gradient(135deg, #e2e8f0, #94a3b8); }
+  .badge-icon.bronze { background: linear-gradient(135deg, #fed7aa, #f97316); }
+  .badge-icon.blue { background: linear-gradient(135deg, #bfdbfe, #3b82f6); }
+  .badge-icon.gray { background: var(--gray-200); filter: grayscale(1); opacity: 0.5; }
+  .badge-name { font-size: 10px; font-weight: 700; color: var(--gray-600); text-align: center; }
+
+  /* ─── ORDER FLOW ─────────────────────────────────── */
+  #order { background: var(--gray-100); }
+  .order-wrapper {
+    background: var(--white); border-radius: var(--radius-xl);
+    overflow: hidden; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
+    max-width: 800px; margin: 0 auto;
+  }
+  .order-progress {
+    padding: 28px 36px; border-bottom: 1px solid var(--gray-200);
+    display: flex; align-items: center; gap: 0;
+  }
+  .op-step {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    position: relative;
+  }
+  .op-step:not(:last-child)::after {
+    content: ''; position: absolute;
+    left: 50%; right: -50%; top: 16px;
+    height: 2px; background: var(--gray-200);
+    z-index: 0;
+  }
+  .op-step.completed:not(:last-child)::after { background: var(--blue-primary); }
+  .op-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--gray-200); color: var(--gray-400);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; z-index: 1;
+    transition: var(--transition); position: relative;
+  }
+  .op-step.active .op-circle {
+    background: var(--blue-primary); color: #fff;
+    box-shadow: 0 0 0 4px rgba(21,101,192,0.2);
+  }
+  .op-step.completed .op-circle { background: var(--green); color: #fff; }
+  .op-label { font-size: 11px; font-weight: 700; color: var(--gray-400); text-align: center; }
+  .op-step.active .op-label { color: var(--blue-primary); }
+  .op-step.completed .op-label { color: var(--green); }
+  .order-content { padding: 40px 36px; min-height: 340px; }
+  .order-step-content { display: none; }
+  .order-step-content.active { display: block; animation: fadeSlide 0.4s ease; }
+  @keyframes fadeSlide {
+    from { opacity:0; transform: translateX(20px); }
+    to { opacity:1; transform: translateX(0); }
+  }
+  .order-step-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--gray-800); }
+  .order-step-sub { font-size: 14px; color: var(--gray-600); margin-bottom: 28px; }
+  .lang-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lang-opt {
+    padding: 16px; border-radius: 14px; border: 2px solid var(--gray-200);
+    cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px;
+  }
+  .lang-opt:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
+  .lang-opt.selected { border-color: var(--blue-primary); background: var(--blue-soft); }
+  .lang-flag { font-size: 28px; }
+  .lang-name { font-size: 15px; font-weight: 700; }
+  .lang-native { font-size: 12px; color: var(--gray-400); }
+  .upload-area {
+    border: 2px dashed var(--gray-200); border-radius: 16px;
+    padding: 48px 32px; text-align: center; cursor: pointer;
+    transition: var(--transition);
+  }
+  .upload-area:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
+  .upload-icon { font-size: 48px; margin-bottom: 16px; }
+  .upload-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .upload-sub { font-size: 13px; color: var(--gray-400); }
+  .form-group { margin-bottom: 20px; }
+  .form-label { font-size: 13px; font-weight: 700; color: var(--gray-700); margin-bottom: 8px; display: block; }
+  .dark .form-label { color: var(--gray-400); }
+  .form-input, .form-textarea, .form-select {
+    width: 100%; padding: 12px 16px; border-radius: 12px;
+    border: 1.5px solid var(--gray-200); font-size: 14px; font-family: inherit;
+    background: var(--white); color: var(--gray-800);
+    transition: var(--transition); outline: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--blue-primary); box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+  }
+  .form-textarea { min-height: 120px; resize: vertical; }
+  .price-breakdown {
+    background: var(--gray-100); border-radius: 16px; padding: 24px;
+  }
+  .price-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--gray-200);
+    font-size: 14px;
+  }
+  .price-row:last-child { border: none; }
+  .price-row.total {
+    font-size: 18px; font-weight: 800; color: var(--blue-primary); margin-top: 8px;
+  }
+  .order-nav {
+    padding: 24px 36px; border-top: 1px solid var(--gray-200);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn-back {
+    padding: 12px 24px; border-radius: 12px;
+    background: var(--gray-100); color: var(--gray-600);
+    border: 1.5px solid var(--gray-200); font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+  }
+  .btn-back:hover { background: var(--gray-200); }
+  .btn-next {
+    padding: 12px 28px; border-radius: 12px;
+    background: var(--blue-primary); color: #fff;
+    border: none; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-next:hover { background: var(--blue-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  /* ─── AI TRANSLATOR ─────────────────────────────── */
+  #ai-translate { background: var(--off-white); }
+  .ai-wrapper {
+    background: linear-gradient(135deg, var(--blue-deep) 0%, #1a237e 100%);
+    border-radius: var(--radius-xl); padding: 48px;
+    position: relative; overflow: hidden;
+  }
+  .ai-glow {
+    position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(66,165,245,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .ai-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: end; }
+  .ai-panel-label { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+  .ai-textarea {
+    width: 100%; padding: 16px; border-radius: 14px; min-height: 160px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08); color: #fff; font-family: inherit;
+    font-size: 15px; line-height: 1.7; resize: none; outline: none;
+    transition: var(--transition); backdrop-filter: blur(10px);
+  }
+  .ai-textarea::placeholder { color: rgba(255,255,255,0.4); }
+  .ai-textarea:focus { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
+  .ai-textarea.output { cursor: default; color: rgba(255,255,255,0.9); }
+  .ai-middle {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    padding-bottom: 4px;
+  }
+  .ai-swap-btn {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition); backdrop-filter: blur(10px);
+  }
+  .ai-swap-btn:hover { background: rgba(255,255,255,0.25); transform: rotate(180deg); }
+  .btn-translate {
+    padding: 12px 24px; border-radius: 12px;
+    background: white; color: var(--blue-primary);
+    border: none; font-size: 14px; font-weight: 800;
+    cursor: pointer; font-family: inherit; transition: var(--transition);
+    white-space: nowrap;
+  }
+  .btn-translate:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .ai-select {
+    background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 8px 12px; border-radius: 10px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    outline: none; cursor: pointer; margin-bottom: 10px;
+  }
+  .ai-select option { background: var(--blue-deep); color: #fff; }
+  .ai-footer-note {
+    text-align: center; margin-top: 20px;
+    font-size: 12px; color: rgba(255,255,255,0.5);
+  }
+  .ai-loading {
+    display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.6); font-size: 14px;
+  }
+  .ai-dots span {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.6); margin: 0 2px;
+    animation: aiDot 1.4s ease infinite;
+  }
+  .ai-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes aiDot { 0%,80%,100%{transform:scale(0);} 40%{transform:scale(1);} }
+
+  /* ─── TESTIMONIALS ─────────────────────────────── */
+  #testimonials { background: var(--gray-100); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .testi-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 28px; border: 1.5px solid var(--gray-200);
+    transition: var(--transition);
+  }
+  .testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .testi-stars { color: #fbbf24; font-size: 16px; margin-bottom: 16px; }
+  .testi-text { font-size: 15px; color: var(--gray-600); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: #fff;
+  }
+  .ta1 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+  .ta2 { background: linear-gradient(135deg, #22c55e, #15803d); }
+  .ta3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .testi-name { font-size: 14px; font-weight: 800; }
+  .testi-role { font-size: 12px; color: var(--gray-400); }
+
+  /* ─── PROFILE ─────────────────────────────────── */
+  #profile { background: var(--off-white); }
+  .profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 24px; }
+  .profile-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    border: 1.5px solid var(--gray-200); overflow: hidden;
+  }
+  .profile-cover {
+    height: 100px;
+    background: linear-gradient(135deg, var(--blue-primary), var(--blue-accent));
+  }
+  .profile-body { padding: 20px; text-align: center; margin-top: -40px; }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 4px solid var(--white); background: var(--blue-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 12px;
+  }
+  .profile-name { font-size: 18px; font-weight: 800; }
+  .profile-bio { font-size: 13px; color: var(--gray-400); margin-top: 4px; }
+  .profile-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 20px; }
+  .ps-item { text-align: center; padding: 12px 8px; background: var(--gray-100); border-radius: 12px; }
+  .ps-num { font-size: 20px; font-weight: 800; color: var(--blue-primary); }
+  .ps-label { font-size: 10px; color: var(--gray-400); }
+  .profile-right { display: flex; flex-direction: column; gap: 20px; }
+  .profile-panel {
+    background: var(--white); border-radius: var(--radius-lg);
+    border: 1.5px solid var(--gray-200); padding: 24px;
+  }
+  .panel-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+  .file-list { display: flex; flex-direction: column; gap: 10px; }
+  .file-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; border-radius: 10px; background: var(--gray-100);
+    transition: var(--transition);
+  }
+  .file-item:hover { background: var(--blue-soft); }
+  .file-icon { font-size: 22px; flex-shrink: 0; }
+  .file-name { font-size: 13px; font-weight: 700; flex: 1; }
+  .file-status {
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .file-status.done { background: #dcfce7; color: #16a34a; }
+  .file-status.progress { background: #dbeafe; color: #1d4ed8; }
+  .file-status.wait { background: #fef9c3; color: #92400e; }
+  .progress-rings {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+  }
+  .ring-wrap { text-align: center; }
+  .ring-label { font-size: 12px; font-weight: 700; margin-top: 8px; color: var(--gray-600); }
+  svg.ring { transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--gray-200); stroke-width: 6; }
+  .ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+  .ring-text { font-size: 14px; font-weight: 800; fill: var(--gray-800); text-anchor: middle; dominant-baseline: middle; }
+
+  /* ─── LEADERBOARD ────────────────────────────── */
+  #leaderboard { background: var(--gray-100); }
+  .lb-list { display: flex; flex-direction: column; gap: 10px; max-width: 700px; margin: 0 auto; }
+  .lb-row {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--white); border-radius: 14px;
+    padding: 16px 20px; border: 1.5px solid var(--gray-200);
+    transition: var(--transition);
+  }
+  .lb-row:hover { box-shadow: var(--shadow-sm); border-color: var(--blue-primary); }
+  .lb-row.top1 { border-color: #fbbf24; background: linear-gradient(135deg, #fffbeb, #fff); }
+  .lb-rank {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 800; width: 32px;
+    text-align: center; color: var(--gray-400);
+  }
+  .lb-row.top1 .lb-rank { color: #fbbf24; }
+  .lb-row.top2 .lb-rank { color: #94a3b8; }
+  .lb-row.top3 .lb-rank { color: #f97316; }
+  .lb-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .lb-name { font-size: 15px; font-weight: 800; flex: 1; }
+  .lb-country { font-size: 18px; margin-right: 8px; }
+  .lb-xp {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800; color: var(--blue-primary);
+  }
+  .lb-xp span { font-size: 12px; font-weight: 600; color: var(--gray-400); }
+  .lb-bar {
+    width: 80px; height: 6px; background: var(--gray-200); border-radius: 10px; overflow: hidden;
+  }
+  .lb-bar-fill { height: 100%; border-radius: 10px; background: var(--blue-primary); }
+
+  /* ─── CTA ────────────────────────────────────── */
+  #cta {
+    background: linear-gradient(135deg, var(--blue-deep), #1a237e);
+    text-align: center; padding: 100px 24px;
+  }
+  #cta .section-title { color: #fff; }
+  #cta .section-sub { color: rgba(255,255,255,0.7); margin: 0 auto 40px; }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ─────────────────────────────────── */
+  footer {
+    background: #070f1f; color: rgba(255,255,255,0.5);
+    padding: 60px 24px 32px;
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+  .footer-brand .logo-text { color: #90caf9; }
+  .footer-desc { font-size: 13px; line-height: 1.8; margin-top: 12px; }
+  .footer-col-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.8); margin-bottom: 16px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 13px; transition: var(--transition); cursor: pointer; }
+  .footer-links a:hover { color: #90caf9; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-bottom-text { font-size: 12px; }
+
+  /* ─── MOBILE NAV ─────────────────────────────── */
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: var(--white); flex-direction: column;
+    padding: 100px 32px 40px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-size: 24px; font-weight: 800; color: var(--gray-800);
+    text-decoration: none; padding: 12px 0;
+    border-bottom: 1px solid var(--gray-200);
+    cursor: pointer; transition: var(--transition);
+  }
+  .mobile-menu a:hover { color: var(--blue-primary); }
+  .mobile-close {
+    position: absolute; top: 20px; right: 24px;
+    background: var(--gray-100); border: none; width: 40px; height: 40px;
+    border-radius: 50%; font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── SCROLL ANIMATIONS ─────────────────────── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── RESPONSIVE ─────────────────────────────── */
+  @media (max-width: 900px) {
+    .nav-links, .btn-nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .hero-cards { display: none; }
+    .dashboard-stats { grid-template-columns: 1fr 1fr 1fr; }
+    .profile-layout { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .ai-grid { grid-template-columns: 1fr; }
+    .ai-middle { flex-direction: row; }
+  }
+  @media (max-width: 600px) {
+    section { padding: 70px 16px; }
+    .dashboard-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+    .dashboard-stats { grid-template-columns: 1fr; }
+    .dash-stat { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .dashboard-path { padding: 24px 20px; }
+    .path-levels { flex-direction: column; }
+    .path-connector { display: none; }
+    .achievements { padding: 0 20px 24px; }
+    .order-content { padding: 24px 20px; }
+    .order-nav { padding: 16px 20px; }
+    .order-progress { padding: 20px; }
+    .lang-options { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .ai-wrapper { padding: 28px 20px; }
+    .hero-stats { gap: 24px; }
+    .profile-stats { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="showPage('home')">
+      <div class="logo-icon">📖</div>
+      <span class="logo-text">ORTOLA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a onclick="showPage('home')" data-i18n="nav.home"></a></li>
+      <li><a onclick="scrollTo('#services')" data-i18n="nav.services"></a></li>
+      <li><a onclick="showPage('dashboard')" data-i18n="nav.dashboard"></a></li>
+      <li><a onclick="showPage('order')" data-i18n="nav.order"></a></li>
+      <li><a onclick="showPage('profile')" data-i18n="nav.profile"></a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+      <a class="btn-nav-cta" onclick="showPage('order')" data-i18n="nav.cta"></a>
+    </div>
+    <button class="hamburger" onclick="toggleMobileMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── MOBILE MENU ─── -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMobileMenu()">✕</button>
+  <a onclick="showPage('home');toggleMobileMenu()" data-i18n="nav.home"></a>
+  <a onclick="scrollTo('#services');toggleMobileMenu()" data-i18n="nav.services"></a>
+  <a onclick="showPage('dashboard');toggleMobileMenu()" data-i18n="nav.dashboard"></a>
+  <a onclick="showPage('order');toggleMobileMenu()" data-i18n="nav.order"></a>
+  <a onclick="showPage('profile');toggleMobileMenu()" data-i18n="nav.profile"></a>
+  <div style="display:flex;gap:8px;margin-top:24px;">
+    <button class="lang-btn active" onclick="setLang('uz')" style="padding:10px 16px;border-radius:10px;border:none;font-family:inherit;font-weight:700;cursor:pointer;background:var(--blue-primary);color:#fff;">UZ</button>
+    <button class="lang-btn" onclick="setLang('ru')" style="padding:10px 16px;border-radius:10px;border:none;font-family:inherit;font-weight:700;cursor:pointer;background:var(--gray-100);color:var(--gray-600);">RU</button>
+    <button class="lang-btn" onclick="setLang('en')" style="padding:10px 16px;border-radius:10px;border:none;font-family:inherit;font-weight:700;cursor:pointer;background:var(--gray-100);color:var(--gray-600);">EN</button>
+  </div>
+</div>
+
+<!-- ═══════════ HOME PAGE ═══════════ -->
+<div id="page-home">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape"></div><div class="shape"></div>
+    <div class="shape"></div><div class="shape"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span data-i18n="hero.badge"></span>
+    </div>
+    <h1 data-i18n="hero.title"></h1>
+    <p data-i18n="hero.subtitle"></p>
+    <div class="hero-cta">
+      <a class="btn-primary" onclick="showPage('order')">
+        🚀 <span data-i18n="hero.cta1"></span>
+      </a>
+      <a class="btn-secondary" onclick="scrollTo('#services')">
+        ✨ <span data-i18n="hero.cta2"></span>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">50K+</span>
+        <span class="hero-stat-label" data-i18n="hero.stat1"></span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">1M+</span>
+        <span class="hero-stat-label" data-i18n="hero.stat2"></span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">40+</span>
+        <span class="hero-stat-label" data-i18n="hero.stat3"></span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">4.9★</span>
+        <span class="hero-stat-label" data-i18n="hero.stat4"></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-cards">
+    <div class="floating-card">
+      <span class="fc-icon">📚</span>
+      <div class="fc-info">
+        <div class="fc-title">Romeo and Juliet</div>
+        <div class="fc-sub">EN → UZ • 42 pages</div>
+      </div>
+      <span class="fc-badge">✓ Done</span>
+    </div>
+    <div class="floating-card">
+      <span class="fc-icon">⚡</span>
+      <div class="fc-info">
+        <div class="fc-title">Contract.pdf</div>
+        <div class="fc-sub">RU → EN • In progress</div>
+      </div>
+      <span class="fc-badge" style="background:#dbeafe;color:#1d4ed8;">⟳ 78%</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="how.tag"></span>
+      <h2 class="section-title" data-i18n="how.title"></h2>
+      <p class="section-sub" data-i18n="how.sub"></p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <div class="step-icon">📤</div>
+        <div class="step-title" data-i18n="how.s1.title"></div>
+        <div class="step-desc" data-i18n="how.s1.desc"></div>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <div class="step-icon">🌍</div>
+        <div class="step-title" data-i18n="how.s2.title"></div>
+        <div class="step-desc" data-i18n="how.s2.desc"></div>
+      </div>
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <div class="step-icon">✨</div>
+        <div class="step-title" data-i18n="how.s3.title"></div>
+        <div class="step-desc" data-i18n="how.s3.desc"></div>
+      </div>
+      <div class="step-card reveal reveal-delay-4">
+        <div class="step-num">04</div>
+        <div class="step-icon">📥</div>
+        <div class="step-title" data-i18n="how.s4.title"></div>
+        <div class="step-desc" data-i18n="how.s4.desc"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="srv.tag"></span>
+      <h2 class="section-title" data-i18n="srv.title"></h2>
+      <p class="section-sub" data-i18n="srv.sub"></p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card s1 reveal reveal-delay-1">
+        <div class="service-icon">📚</div>
+        <div class="service-title" data-i18n="srv.book.title"></div>
+        <div class="service-desc" data-i18n="srv.book.desc"></div>
+        <div class="service-price">
+          <span class="price-from" data-i18n="srv.from"></span>
+          <span class="price-amount">$0.02</span>
+          <span class="price-unit" data-i18n="srv.perword"></span>
+        </div>
+        <button class="btn-service" onclick="showPage('order')" data-i18n="srv.order"></button>
+      </div>
+      <div class="service-card s2 reveal reveal-delay-2">
+        <div class="service-badge" data-i18n="srv.popular"></div>
+        <div class="service-icon">📄</div>
+        <div class="service-title" data-i18n="srv.doc.title"></div>
+        <div class="service-desc" data-i18n="srv.doc.desc"></div>
+        <div class="service-price">
+          <span class="price-from" data-i18n="srv.from"></span>
+          <span class="price-amount">$5</span>
+          <span class="price-unit" data-i18n="srv.perpage"></span>
+        </div>
+        <button class="btn-service" onclick="showPage('order')" data-i18n="srv.order"></button>
+      </div>
+      <div class="service-card s3 reveal reveal-delay-3">
+        <div class="service-icon">💬</div>
+        <div class="service-title" data-i18n="srv.text.title"></div>
+        <div class="service-desc" data-i18n="srv.text.desc"></div>
+        <div class="service-price">
+          <span class="price-from" data-i18n="srv.from"></span>
+          <span class="price-amount">$2</span>
+          <span class="price-unit" data-i18n="srv.per500"></span>
+        </div>
+        <button class="btn-service" onclick="showPage('order')" data-i18n="srv.order"></button>
+      </div>
+      <div class="service-card s4 reveal reveal-delay-4">
+        <div class="service-icon">🎬</div>
+        <div class="service-title" data-i18n="srv.sub.title"></div>
+        <div class="service-desc" data-i18n="srv.sub.desc"></div>
+        <div class="service-price">
+          <span class="price-from" data-i18n="srv.from"></span>
+          <span class="price-amount">$10</span>
+          <span class="price-unit" data-i18n="srv.permin"></span>
+        </div>
+        <button class="btn-service" onclick="showPage('order')" data-i18n="srv.order"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI TRANSLATE -->
+<section id="ai-translate">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="ai.tag"></span>
+      <h2 class="section-title" data-i18n="ai.title"></h2>
+      <p class="section-sub" data-i18n="ai.sub"></p>
+    </div>
+    <div class="ai-wrapper reveal">
+      <div class="ai-glow"></div>
+      <div class="ai-grid">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div class="ai-panel-label" data-i18n="ai.source"></div>
+            <select class="ai-select" id="aiFromLang">
+              <option value="uz">🇺🇿 Uzbek</option>
+              <option value="ru">🇷🇺 Russian</option>
+              <option value="en" selected>🇬🇧 English</option>
+              <option value="fr">🇫🇷 French</option>
+              <option value="de">🇩🇪 German</option>
+            </select>
+          </div>
+          <textarea class="ai-textarea" id="aiInput" placeholder="Type or paste text here..." oninput="clearOutput()"></textarea>
+        </div>
+        <div class="ai-middle">
+          <button class="ai-swap-btn" onclick="swapLangs()" title="Swap languages">⇄</button>
+          <button class="btn-translate" onclick="doAITranslate()" data-i18n="ai.translate"></button>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div class="ai-panel-label" data-i18n="ai.target"></div>
+            <select class="ai-select" id="aiToLang">
+              <option value="uz" selected>🇺🇿 Uzbek</option>
+              <option value="ru">🇷🇺 Russian</option>
+              <option value="en">🇬🇧 English</option>
+              <option value="fr">🇫🇷 French</option>
+              <option value="de">🇩🇪 German</option>
+            </select>
+          </div>
+          <textarea class="ai-textarea output" id="aiOutput" readonly placeholder="Translation will appear here..."></textarea>
+        </div>
+      </div>
+      <div class="ai-footer-note" data-i18n="ai.note"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="test.tag"></span>
+      <h2 class="section-title" data-i18n="test.title"></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" data-i18n="test.t1.text"></div>
+        <div class="testi-author">
+          <div class="testi-avatar ta1">A</div>
+          <div>
+            <div class="testi-name" data-i18n="test.t1.name"></div>
+            <div class="testi-role" data-i18n="test.t1.role"></div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" data-i18n="test.t2.text"></div>
+        <div class="testi-author">
+          <div class="testi-avatar ta2">M</div>
+          <div>
+            <div class="testi-name" data-i18n="test.t2.name"></div>
+            <div class="testi-role" data-i18n="test.t2.role"></div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-3">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" data-i18n="test.t3.text"></div>
+        <div class="testi-author">
+          <div class="testi-avatar ta3">Z</div>
+          <div>
+            <div class="testi-name" data-i18n="test.t3.name"></div>
+            <div class="testi-role" data-i18n="test.t3.role"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="lb.tag"></span>
+      <h2 class="section-title" data-i18n="lb.title"></h2>
+      <p class="section-sub" data-i18n="lb.sub"></p>
+    </div>
+    <div class="lb-list">
+      <div class="lb-row top1 reveal reveal-delay-1">
+        <div class="lb-rank">🥇</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#fbbf24,#d97706);">S</div>
+        <div>
+          <div class="lb-name">Sarvar Ergashev</div>
+          <div style="font-size:12px;color:var(--gray-400)">Level 12 • Tashkent</div>
+        </div>
+        <span class="lb-country">🇺🇿</span>
+        <div class="lb-bar"><div class="lb-bar-fill" style="width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);"></div></div>
+        <div class="lb-xp">4,820 <span>XP</span></div>
+      </div>
+      <div class="lb-row top2 reveal reveal-delay-2">
+        <div class="lb-rank">🥈</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b);">N</div>
+        <div>
+          <div class="lb-name">Nilufar Karimova</div>
+          <div style="font-size:12px;color:var(--gray-400)">Level 11 • Samarkand</div>
+        </div>
+        <span class="lb-country">🇺🇿</span>
+        <div class="lb-bar"><div class="lb-bar-fill" style="width:88%;background:linear-gradient(90deg,#94a3b8,#64748b);"></div></div>
+        <div class="lb-xp">4,210 <span>XP</span></div>
+      </div>
+      <div class="lb-row top3 reveal reveal-delay-3">
+        <div class="lb-rank">🥉</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#fb923c,#ea580c);">R</div>
+        <div>
+          <div class="lb-name">Rustam Nazarov</div>
+          <div style="font-size:12px;color:var(--gray-400)">Level 10 • Moscow</div>
+        </div>
+        <span class="lb-country">🇷🇺</span>
+        <div class="lb-bar"><div class="lb-bar-fill" style="width:76%;background:linear-gradient(90deg,#fb923c,#ea580c);"></div></div>
+        <div class="lb-xp">3,890 <span>XP</span></div>
+      </div>
+      <div class="lb-row reveal reveal-delay-4">
+        <div class="lb-rank">4</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);">A</div>
+        <div>
+          <div class="lb-name">Aisha Mirzayeva</div>
+          <div style="font-size:12px;color:var(--gray-400)">Level 9 • London</div>
+        </div>
+        <span class="lb-country">🇬🇧</span>
+        <div class="lb-bar"><div class="lb-bar-fill" style="width:67%;"></div></div>
+        <div class="lb-xp">3,240 <span>XP</span></div>
+      </div>
+      <div class="lb-row reveal">
+        <div class="lb-rank">5</div>
+        <div class="lb-avatar" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);">K</div>
+        <div>
+          <div class="lb-name">Kamol Toshmatov</div>
+          <div style="font-size:12px;color:var(--gray-400)">Level 8 • Fergana</div>
+        </div>
+        <span class="lb-country">🇺🇿</span>
+        <div class="lb-bar"><div class="lb-bar-fill" style="width:55%;"></div></div>
+        <div class="lb-xp">2,670 <span>XP</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag" style="background:rgba(255,255,255,0.15);color:#90caf9;" data-i18n="cta.tag"></span>
+      <h2 class="section-title" style="color:#fff;margin-top:16px;" data-i18n="cta.title"></h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.7);margin:16px auto 40px;" data-i18n="cta.sub"></p>
+      <div class="cta-buttons">
+        <a class="btn-primary" onclick="showPage('order')">🚀 <span data-i18n="cta.btn1"></span></a>
+        <a class="btn-secondary" onclick="showPage('dashboard')">🎮 <span data-i18n="cta.btn2"></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="display:flex;align-items:center;gap:10px;">
+          <div class="logo-icon">📖</div>
+          <span class="logo-text" style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#90caf9;">ORTOLA</span>
+        </div>
+        <div class="footer-desc" data-i18n="footer.desc"></div>
+      </div>
+      <div>
+        <div class="footer-col-title" data-i18n="footer.services"></div>
+        <ul class="footer-links">
+          <li><a data-i18n="srv.book.title"></a></li>
+          <li><a data-i18n="srv.doc.title"></a></li>
+          <li><a data-i18n="srv.text.title"></a></li>
+          <li><a data-i18n="srv.sub.title"></a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title" data-i18n="footer.company"></div>
+        <ul class="footer-links">
+          <li><a data-i18n="footer.about"></a></li>
+          <li><a data-i18n="footer.blog"></a></li>
+          <li><a data-i18n="footer.careers"></a></li>
+          <li><a data-i18n="footer.contact"></a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title" data-i18n="footer.support"></div>
+        <ul class="footer-links">
+          <li><a data-i18n="footer.faq"></a></li>
+          <li><a data-i18n="footer.privacy"></a></li>
+          <li><a data-i18n="footer.terms"></a></li>
+          <li><a data-i18n="footer.api"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text" data-i18n="footer.copy"></div>
+      <div style="display:flex;gap:16px;">
+        <a style="color:rgba(255,255,255,0.45);font-size:20px;cursor:pointer;" title="Telegram">✈️</a>
+        <a style="color:rgba(255,255,255,0.45);font-size:20px;cursor:pointer;" title="Instagram">📸</a>
+        <a style="color:rgba(255,255,255,0.45);font-size:20px;cursor:pointer;" title="LinkedIn">💼</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-home -->
+
+<!-- ═══════════ DASHBOARD PAGE ═══════════ -->
+<div id="page-dashboard" style="display:none;padding-top:80px;">
+<section id="dashboard">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <span class="section-tag" data-i18n="dash.tag"></span>
+      <h2 class="section-title" data-i18n="dash.title"></h2>
+      <p class="section-sub" data-i18n="dash.sub"></p>
+    </div>
+    <div class="dashboard-wrapper reveal">
+      <div class="dashboard-header">
+        <div class="dash-user">
+          <div class="dash-avatar">👤</div>
+          <div>
+            <div class="dash-name">Sarvar Ergashev</div>
+            <div class="dash-level">🏆 Level 7 — <span data-i18n="dash.translator"></span></div>
+          </div>
+        </div>
+        <div class="dash-xp">
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px;" data-i18n="dash.xp"></div>
+          <div class="xp-num">2,840</div>
+          <div class="xp-bar-wrap"><div class="xp-bar"></div></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;">2,840 / 4,200 XP</div>
+        </div>
+      </div>
+      <div class="dashboard-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🔥</div>
+          <div class="dash-stat-num">14</div>
+          <div class="dash-stat-label" data-i18n="dash.streak"></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">📝</div>
+          <div class="dash-stat-num">38</div>
+          <div class="dash-stat-label" data-i18n="dash.orders"></div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🌍</div>
+          <div class="dash-stat-num">6</div>
+          <div class="dash-stat-label" data-i18n="dash.langs"></div>
+        </div>
+      </div>
+      <div class="dashboard-path">
+        <div class="path-title" data-i18n="dash.path"></div>
+        <div class="path-levels">
+          <div class="level-node completed" onclick="showLevelInfo('beginner')">
+            <div class="level-check">✓</div>
+            <div class="level-icon">🌱</div>
+            <div class="level-name" data-i18n="lvl.beginner"></div>
+            <div class="level-xp">200 XP</div>
+          </div>
+          <div class="path-connector">→</div>
+          <div class="level-node completed" onclick="showLevelInfo('basic')">
+            <div class="level-check">✓</div>
+            <div class="level-icon">📰</div>
+            <div class="level-name" data-i18n="lvl.basic"></div>
+            <div class="level-xp">500 XP</div>
+          </div>
+          <div class="path-connector">→</div>
+          <div class="level-node active" onclick="showLevelInfo('intermediate')">
+            <div class="level-icon">📖</div>
+            <div class="level-name" data-i18n="lvl.intermediate"></div>
+            <div class="level-xp">1,200 XP</div>
+          </div>
+          <div class="path-connector">→</div>
+          <div class="level-node locked" onclick="showLevelInfo('advanced')">
+            <div class="level-icon">🔒</div>
+            <div class="level-name" data-i18n="lvl.advanced"></div>
+            <div class="level-xp">3,000 XP</div>
+          </div>
+          <div class="path-connector">→</div>
+          <div class="level-node locked">
+            <div class="level-icon">🔒</div>
+            <div class="level-name" data-i18n="lvl.expert"></div>
+            <div class="level-xp">6,000 XP</div>
+          </div>
+        </div>
+      </div>
+      <div class="achievements">
+        <div class="ach-title" data-i18n="dash.badges"></div>
+        <div class="badges-row">
+          <div class="badge-item" title="First Translation">
+            <div class="badge-icon gold">🌟</div>
+            <div class="badge-name" data-i18n="bdg.first"></div>
+          </div>
+          <div class="badge-item" title="7-Day Streak">
+            <div class="badge-icon gold">🔥</div>
+            <div class="badge-name" data-i18n="bdg.streak7"></div>
+          </div>
+          <div class="badge-item" title="Speed Demon">
+            <div class="badge-icon silver">⚡</div>
+            <div class="badge-name" data-i18n="bdg.speed"></div>
+          </div>
+          <div class="badge-item" title="Polyglot">
+            <div class="badge-icon blue">🌍</div>
+            <div class="badge-name" data-i18n="bdg.poly"></div>
+          </div>
+          <div class="badge-item" title="Book Lover">
+            <div class="badge-icon bronze">📚</div>
+            <div class="badge-name" data-i18n="bdg.book"></div>
+          </div>
+          <div class="badge-item" title="Locked">
+            <div class="badge-icon gray">🏆</div>
+            <div class="badge-name" data-i18n="bdg.locked"></div>
+          </div>
+          <div class="badge-item" title="Locked">
+            <div class="badge-icon gray">💎</div>
+            <div class="badge-name" data-i18n="bdg.locked"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ═══════════ ORDER PAGE ═══════════ -->
+<div id="page-order" style="display:none;padding-top:80px;">
+<section id="order">
+  <div class="section-inner">
+    <div class="section-header center reveal">
+      <span class="section-tag" data-i18n="ord.tag"></span>
+      <h2 class="section-title" data-i18n="ord.title"></h2>
+      <p class="section-sub" data-i18n="ord.sub"></p>
+    </div>
+    <div class="order-wrapper reveal">
+      <div class="order-progress" id="orderProgress">
+        <div class="op-step completed" id="opstep1">
+          <div class="op-circle">1</div>
+          <div class="op-label" data-i18n="ord.step1"></div>
+        </div>
+        <div class="op-step" id="opstep2">
+          <div class="op-circle">2</div>
+          <div class="op-label" data-i18n="ord.step2"></div>
+        </div>
+        <div class="op-step" id="opstep3">
+          <div class="op-circle">3</div>
+          <div class="op-label" data-i18n="ord.step3"></div>
+        </div>
+        <div class="op-step" id="opstep4">
+          <div class="op-circle">4</div>
+          <div class="op-label" data-i18n="ord.step4"></div>
+        </div>
+        <div class="op-step" id="opstep5">
+          <div class="op-circle">5</div>
+          <div class="op-label" data-i18n="ord.step5"></div>
+        </div>
+      </div>
+      <div class="order-content">
+        <!-- Step 1 -->
+        <div class="order-step-content active" id="ostep1">
+          <div class="order-step-title" data-i18n="ord.s1.title"></div>
+          <div class="order-step-sub" data-i18n="ord.s1.sub"></div>
+          <div class="lang-options">
+            <div class="lang-opt selected" onclick="selectLang(this,'en')">
+              <span class="lang-flag">🇬🇧</span>
+              <div>
+                <div class="lang-name">English</div>
+                <div class="lang-native">English</div>
+              </div>
+            </div>
+            <div class="lang-opt" onclick="selectLang(this,'ru')">
+              <span class="lang-flag">🇷🇺</span>
+              <div>
+                <div class="lang-name">Rus</div>
+                <div class="lang-native">Русский</div>
+              </div>
+            </div>
+            <div class="lang-opt" onclick="selectLang(this,'uz')">
+              <span class="lang-flag">🇺🇿</span>
+              <div>
+                <div class="lang-name">O'zbek</div>
+                <div class="lang-native">O'zbekcha</div>
+              </div>
+            </div>
+            <div class="lang-opt" onclick="selectLang(this,'fr')">
+              <span class="lang-flag">🇫🇷</span>
+              <div>
+                <div class="lang-name">Fransuz</div>
+                <div class="lang-native">Français</div>
+              </div>
+            </div>
+            <div class="lang-opt" onclick="selectLang(this,'de')">
+              <span class="lang-flag">🇩🇪</span>
+              <div>
+                <div class="lang-name">Nemis</div>
+                <div class="lang-native">Deutsch</div>
+              </div>
+            </div>
+            <div class="lang-opt" onclick="selectLang(this,'ar')">
+              <span class="lang-flag">🇸🇦</span>
+              <div>
+                <div class="lang-name">Arab</div>
+                <div class="lang-native">العربية</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="order-step-content" id="ostep2">
+          <div class="order-step-title" data-i18n="ord.s2.title"></div>
+          <div class="order-step-sub" data-i18n="ord.s2.sub"></div>
+          <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
+            <div class="upload-icon" id="uploadIcon">📁</div>
+            <div class="upload-title" id="uploadTitle" data-i18n="ord.s2.click"></div>
+            <div class="upload-sub" data-i18n="ord.s2.formats"></div>
+          </div>
+          <div style="margin-top:16px;" class="form-group">
+            <label class="form-label" data-i18n="ord.s2.type"></label>
+            <select class="form-select">
+              <option data-i18n="srv.book.title">Book Translation</option>
+              <option data-i18n="srv.doc.title">Document</option>
+              <option data-i18n="srv.text.title">Text</option>
+              <option data-i18n="srv.sub.title">Subtitles</option>
+            </select>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div class="order-step-content" id="ostep3">
+          <div class="order-step-title" data-i18n="ord.s3.title"></div>
+          <div class="order-step-sub" data-i18n="ord.s3.sub"></div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="ord.s3.style"></label>
+            <select class="form-select">
+              <option data-i18n="ord.s3.style.formal"></option>
+              <option data-i18n="ord.s3.style.casual"></option>
+              <option data-i18n="ord.s3.style.technical"></option>
+              <option data-i18n="ord.s3.style.literary"></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="ord.s3.deadline"></label>
+            <input type="date" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="ord.s3.notes"></label>
+            <textarea class="form-textarea" data-i18n-placeholder="ord.s3.placeholder"></textarea>
+          </div>
+        </div>
+        <!-- Step 4 -->
+        <div class="order-step-content" id="ostep4">
+          <div class="order-step-title" data-i18n="ord.s4.title"></div>
+          <div class="order-step-sub" data-i18n="ord.s4.sub"></div>
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span data-i18n="ord.s4.base"></span>
+              <span>$25.00</span>
+            </div>
+            <div class="price-row">
+              <span data-i18n="ord.s4.urgency"></span>
+              <span>+$5.00</span>
+            </div>
+            <div class="price-row">
+              <span data-i18n="ord.s4.discount"></span>
+              <span style="color:var(--green)">-$3.00</span>
+            </div>
+            <div class="price-row total">
+              <span data-i18n="ord.s4.total"></span>
+              <span>$27.00</span>
+            </div>
+          </div>
+          <div style="margin-top:20px;padding:16px;background:var(--blue-soft);border-radius:14px;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">⚡</span>
+            <div>
+              <div style="font-weight:700;font-size:14px;" data-i18n="ord.s4.fast"></div>
+              <div style="font-size:12px;color:var(--gray-600);" data-i18n="ord.s4.est"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Step 5 -->
+        <div class="order-step-content" id="ostep5">
+          <div style="text-align:center;padding:40px 0;">
+            <div style="font-size:72px;margin-bottom:20px;animation:heroIn 0.5s ease;">🎉</div>
+            <div class="order-step-title" data-i18n="ord.s5.title"></div>
+            <div class="order-step-sub" style="margin:12px auto;max-width:400px;" data-i18n="ord.s5.sub"></div>
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap;">
+              <button class="btn-next" onclick="showPage('dashboard')">🎮 <span data-i18n="ord.s5.dash"></span></button>
+              <button class="btn-back" onclick="resetOrder()">+ <span data-i18n="ord.s5.new"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="order-nav" id="orderNav">
+        <button class="btn-back" onclick="orderPrev()" id="orderBackBtn" style="visibility:hidden;" data-i18n="ord.back"></button>
+        <button class="btn-next" onclick="orderNext()" id="orderNextBtn">
+          <span data-i18n="ord.next"></span> →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ═══════════ PROFILE PAGE ═══════════ -->
+<div id="page-profile" style="display:none;padding-top:80px;">
+<section id="profile">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <span class="section-tag" data-i18n="prf.tag"></span>
+      <h2 class="section-title" data-i18n="prf.title"></h2>
+    </div>
+    <div class="profile-layout">
+      <div>
+        <div class="profile-card reveal">
+          <div class="profile-cover"></div>
+          <div class="profile-body">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name">Sarvar Ergashev</div>
+            <div class="profile-bio" data-i18n="prf.bio"></div>
+            <div class="profile-stats">
+              <div class="ps-item">
+                <div class="ps-num">38</div>
+                <div class="ps-label" data-i18n="prf.orders"></div>
+              </div>
+              <div class="ps-item">
+                <div class="ps-num">2.8K</div>
+                <div class="ps-label" data-i18n="prf.xp"></div>
+              </div>
+              <div class="ps-item">
+                <div class="ps-num">14🔥</div>
+                <div class="ps-label" data-i18n="prf.streak"></div>
+              </div>
+            </div>
+            <div style="margin-top:20px;">
+              <button class="btn-service" onclick="showPage('order')" data-i18n="prf.neworder" style="margin-bottom:10px;"></button>
+              <button class="btn-back" style="width:100%;" data-i18n="prf.settings"></button>
+            </div>
+          </div>
+        </div>
+        <div class="profile-card reveal" style="margin-top:16px;padding:20px;">
+          <div class="panel-title" data-i18n="dash.badges"></div>
+          <div class="badges-row">
+            <div class="badge-item"><div class="badge-icon gold">🌟</div></div>
+            <div class="badge-item"><div class="badge-icon gold">🔥</div></div>
+            <div class="badge-item"><div class="badge-icon silver">⚡</div></div>
+            <div class="badge-item"><div class="badge-icon blue">🌍</div></div>
+            <div class="badge-item"><div class="badge-icon bronze">📚</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-right">
+        <div class="profile-panel reveal reveal-delay-1">
+          <div class="panel-title" data-i18n="prf.files"></div>
+          <div class="file-list">
+            <div class="file-item">
+              <span class="file-icon">📚</span>
+              <div class="file-name">Harry Potter Ch.1–5.pdf</div>
+              <div style="font-size:12px;color:var(--gray-400)">EN→UZ</div>
+              <span class="file-status done" data-i18n="prf.done"></span>
+            </div>
+            <div class="file-item">
+              <span class="file-icon">📄</span>
+              <div class="file-name">Contract_legal.docx</div>
+              <div style="font-size:12px;color:var(--gray-400)">RU→EN</div>
+              <span class="file-status progress" data-i18n="prf.progress"></span>
+            </div>
+            <div class="file-item">
+              <span class="file-icon">🎬</span>
+              <div class="file-name">Movie_subtitles.srt</div>
+              <div style="font-size:12px;color:var(--gray-400)">EN→UZ</div>
+              <span class="file-status wait" data-i18n="prf.waiting"></span>
+            </div>
+            <div class="file-item">
+              <span class="file-icon">📊</span>
+              <div class="file-name">Report_Q4_2024.xlsx</div>
+              <div style="font-size:12px;color:var(--gray-400)">EN→RU</div>
+              <span class="file-status done" data-i18n="prf.done"></span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-panel reveal reveal-delay-2">
+          <div class="panel-title" data-i18n="prf.progress"></div>
+          <div class="progress-rings">
+            <div class="ring-wrap">
+              <svg class="ring" width="90" height="90" viewBox="0 0 90 90">
+                <circle class="ring-track" cx="45" cy="45" r="36"/>
+                <circle class="ring-fill" cx="45" cy="45" r="36" stroke="#1565c0"
+                  stroke-dasharray="226" stroke-dashoffset="70"/>
+                <text class="ring-text" x="45" y="45" transform="rotate(90,45,45)" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;fill:var(--gray-800);">68%</text>
+              </svg>
+              <div class="ring-label" data-i18n="prf.r1"></div>
+            </div>
+            <div class="ring-wrap">
+              <svg class="ring" width="90" height="90" viewBox="0 0 90 90">
+                <circle class="ring-track" cx="45" cy="45" r="36"/>
+                <circle class="ring-fill" cx="45" cy="45" r="36" stroke="#22c55e"
+                  stroke-dasharray="226" stroke-dashoffset="36"/>
+                <text class="ring-text" x="45" y="45" transform="rotate(90,45,45)" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;fill:var(--gray-800);">84%</text>
+              </svg>
+              <div class="ring-label" data-i18n="prf.r2"></div>
+            </div>
+            <div class="ring-wrap">
+              <svg class="ring" width="90" height="90" viewBox="0 0 90 90">
+                <circle class="ring-track" cx="45" cy="45" r="36"/>
+                <circle class="ring-fill" cx="45" cy="45" r="36" stroke="#f59e0b"
+                  stroke-dasharray="226" stroke-dashoffset="130"/>
+                <text class="ring-text" x="45" y="45" transform="rotate(90,45,45)" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;fill:var(--gray-800);">42%</text>
+              </svg>
+              <div class="ring-label" data-i18n="prf.r3"></div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-panel reveal reveal-delay-3">
+          <div class="panel-title" data-i18n="prf.activity"></div>
+          <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;">
+            <!-- Activity heat map dots -->
+            <script>
+              var heat = '';
+              var colors = ['#e2e8f0','#bfdbfe','#93c5fd','#60a5fa','#3b82f6','#1d4ed8'];
+              for(var i=0;i<84;i++){
+                var c=colors[Math.floor(Math.random()*colors.length)];
+                heat += '<div style="width:100%;aspect-ratio:1;border-radius:3px;background:'+c+';transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.3)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>';
+              }
+              document.write(heat);
+            </script>
+          </div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:8px;text-align:right;" data-i18n="prf.last12w"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+// ─── i18n DATA ──────────────────────────────────────────────────────────────
+const i18n = {
+  uz: {
+    "nav.home": "Bosh sahifa",
+    "nav.services": "Xizmatlar",
+    "nav.dashboard": "Boshqaruv",
+    "nav.order": "Buyurtma",
+    "nav.profile": "Profil",
+    "nav.cta": "Boshlash",
+    "hero.badge": "AI-kuchli tarjima platformasi",
+    "hero.title": "Hamma narsani Tarjima qiling. Hamma narsani Tushuning.",
+    "hero.subtitle": "ORTOLA — kitoblar, hujjatlar va matnlarni tez va aniq tarjima qiluvchi aqlli platforma. O'zbek, rus va 40+ tilda.",
+    "hero.cta1": "Hozir Boshlang",
+    "hero.cta2": "Xizmatlarni Ko'ring",
+    "hero.stat1": "Foydalanuvchilar",
+    "hero.stat2": "Tarjimalar",
+    "hero.stat3": "Tillar",
+    "hero.stat4": "Reyting",
+    "how.tag": "QANDAY ISHLAYDI",
+    "how.title": "4 qadamda tayyor",
+    "how.sub": "Oddiy va tez jarayon — hujjatingizni yuklang va tayyor tarjimani oling.",
+    "how.s1.title": "Faylni yuklang",
+    "how.s1.desc": "PDF, DOCX, TXT yoki boshqa formatdagi faylingizni yuklang.",
+    "how.s2.title": "Tilni tanlang",
+    "how.s2.desc": "40+ tildan manba va maqsad tilini tanlang.",
+    "how.s3.title": "AI tarjima qiladi",
+    "how.s3.desc": "Aqlli AI tizimimiz matnni sifatli tarjima qiladi.",
+    "how.s4.title": "Yuklab oling",
+    "how.s4.desc": "Tayyor tarjimani original formatda yuklab oling.",
+    "srv.tag": "XIZMATLAR",
+    "srv.title": "Barcha Tarjima Xizmatlari",
+    "srv.sub": "Har qanday turdagi matn uchun professional tarjima xizmatlari.",
+    "srv.book.title": "Kitob Tarjimasi",
+    "srv.book.desc": "Romanlar, ilmiy, fantastika — barcha janrdagi kitoblarni to'liq tarjima qilamiz.",
+    "srv.doc.title": "Hujjat Tarjimasi",
+    "srv.doc.desc": "Yuridik, tibbiy, biznes hujjatlarini aniqlik bilan tarjima qilamiz.",
+    "srv.text.title": "Matn Tarjimasi",
+    "srv.text.desc": "Qisqa matnlar, xabarlar va kontent uchun tez tarjima.",
+    "srv.sub.title": "Subtitr Tarjimasi",
+    "srv.sub.desc": "Filmlar va videolar uchun SRT/VTT subtitr fayllari tarjimasi.",
+    "srv.from": "dan",
+    "srv.perword": "/ so'z",
+    "srv.perpage": "/ bet",
+    "srv.per500": "/ 500 so'z",
+    "srv.permin": "/ daqiqa",
+    "srv.order": "Buyurtma Berish →",
+    "srv.popular": "🔥 Mashhur",
+    "ai.tag": "AI TARJIMON",
+    "ai.title": "Tezkor AI Tarjima",
+    "ai.sub": "Matn kiriting va bir zumda tarjima oling. Bu faqat namuna — to'liq xizmat uchun buyurtma bering.",
+    "ai.source": "Manba matn",
+    "ai.target": "Tarjima",
+    "ai.translate": "⚡ Tarjima",
+    "ai.note": "⚠️ Bu namuna tarjima. Professional tarjima uchun buyurtma bering.",
+    "test.tag": "FIKRLAR",
+    "test.title": "Mijozlarimiz Nimalar Deydi",
+    "test.t1.text": "\"ORTOLA orqali romanim o'zbek tiliga ajoyib tarjima qilindi. Sifat juda yuqori, muddatga aniq!\"",
+    "test.t1.name": "Aziza Rahimova",
+    "test.t1.role": "Yozuvchi, Toshkent",
+    "test.t2.text": "\"Biznes shartnomalarimizni 3 tilda tarjima qildirishimiz kerak edi. ORTOLA buni tez va professional bajardi.\"",
+    "test.t2.name": "Murod Xasanov",
+    "test.t2.role": "Biznes egasi",
+    "test.t3.text": "\"Subtitr tarjimasi xizmati uchun rahmat! Filmlarimiz endi o'zbek va rus tilida ham mavjud.\"",
+    "test.t3.name": "Zilola Umarova",
+    "test.t3.role": "Kontent yaratuvchi",
+    "lb.tag": "REYTING",
+    "lb.title": "Eng Faol Foydalanuvchilar",
+    "lb.sub": "Eng ko'p XP to'plagan foydalanuvchilar har hafta mukofotlanadi.",
+    "cta.tag": "HOZIR BOSHLANG",
+    "cta.title": "Tarjima Sayohatingizni Boshlang",
+    "cta.sub": "Minglab foydalanuvchilar bilan birga ORTOLA platformasidan foydalaning.",
+    "cta.btn1": "Buyurtma Berish",
+    "cta.btn2": "Dashboard Ko'rish",
+    "footer.desc": "ORTOLA — professional tarjima platformasi. AI va insoniy ekspertlik birlashgan.",
+    "footer.services": "XIZMATLAR",
+    "footer.company": "KOMPANIYA",
+    "footer.support": "YORDAM",
+    "footer.about": "Biz haqimizda",
+    "footer.blog": "Blog",
+    "footer.careers": "Vakansiyalar",
+    "footer.contact": "Bog'lanish",
+    "footer.faq": "FAQ",
+    "footer.privacy": "Maxfiylik",
+    "footer.terms": "Shartlar",
+    "footer.api": "API",
+    "footer.copy": "© 2025 ORTOLA. Barcha huquqlar himoyalangan.",
+    "dash.tag": "BOSHQARUV PANELI",
+    "dash.title": "Sizning Progressingiz",
+    "dash.sub": "Darajalaringizni oshiring, mukofotlar yig'ing va eng yaxshi tarjimonlar safida bo'ling.",
+    "dash.translator": "Tarjimon",
+    "dash.xp": "Tajriba Ballari",
+    "dash.streak": "Kunlik streak",
+    "dash.orders": "Buyurtmalar",
+    "dash.langs": "Tillar",
+    "dash.path": "🗺️ O'quv Yo'li",
+    "dash.badges": "🏅 Mukofotlar",
+    "lvl.beginner": "Boshlang'ich",
+    "lvl.basic": "Maqolalar",
+    "lvl.intermediate": "Kitoblar",
+    "lvl.advanced": "Professional",
+    "lvl.expert": "Ekspert",
+    "bdg.first": "Birinchi",
+    "bdg.streak7": "7 Kun🔥",
+    "bdg.speed": "Tezkor",
+    "bdg.poly": "Ko'p Tilli",
+    "bdg.book": "Kitobxon",
+    "bdg.locked": "Qulflangan",
+    "ord.tag": "BUYURTMA",
+    "ord.title": "Buyurtma Bering",
+    "ord.sub": "5 oddiy qadamda tarjima buyurtmangizni rasmiylashtiring.",
+    "ord.step1": "Til",
+    "ord.step2": "Fayl",
+    "ord.step3": "Izoh",
+    "ord.step4": "Narx",
+    "ord.step5": "Tugash",
+    "ord.s1.title": "Tilni Tanlang",
+    "ord.s1.sub": "Qaysi tildan qaysi tilga tarjima kerak?",
+    "ord.s2.title": "Faylni Yuklang",
+    "ord.s2.sub": "Tarjima kerak bo'lgan faylni yuklang.",
+    "ord.s2.click": "Faylni tanlash uchun bosing",
+    "ord.s2.formats": "PDF, DOCX, TXT, SRT, XLSX — max 50MB",
+    "ord.s2.type": "Xizmat turi",
+    "ord.s3.title": "Qo'shimcha Ma'lumot",
+    "ord.s3.sub": "Tarjima uslubi va muddatini belgilang.",
+    "ord.s3.style": "Tarjima uslubi",
+    "ord.s3.style.formal": "Rasmiy",
+    "ord.s3.style.casual": "Oddiy",
+    "ord.s3.style.technical": "Texnik",
+    "ord.s3.style.literary": "Adabiy",
+    "ord.s3.deadline": "Muddat",
+    "ord.s3.notes": "Izohlar",
+    "ord.s3.placeholder": "Maxsus talablar, kontekst yoki qo'shimcha ma'lumot...",
+    "ord.s4.title": "Narx Hisoblash",
+    "ord.s4.sub": "Buyurtmangiz uchun taxminiy narx.",
+    "ord.s4.base": "Asosiy tarjima",
+    "ord.s4.urgency": "Tezkorlik",
+    "ord.s4.discount": "Chegirma (10%)",
+    "ord.s4.total": "Jami",
+    "ord.s4.fast": "⚡ Tezkor yetkazib berish",
+    "ord.s4.est": "Taxminan 24-48 soat ichida tayyor",
+    "ord.s5.title": "Buyurtma Qabul Qilindi! 🎉",
+    "ord.s5.sub": "Buyurtmangiz muvaffaqiyatli jonatildi. Biz siz bilan tez orada bog'lanamiz.",
+    "ord.s5.dash": "Dashboard'ga o'tish",
+    "ord.s5.new": "Yangi Buyurtma",
+    "ord.back": "← Orqaga",
+    "ord.next": "Davom etish",
+    "prf.tag": "PROFIL",
+    "prf.title": "Mening Profilim",
+    "prf.bio": "Professional tarjimon · 6 til",
+    "prf.orders": "Buyurtma",
+    "prf.xp": "XP",
+    "prf.streak": "Streak",
+    "prf.neworder": "Yangi Buyurtma",
+    "prf.settings": "Sozlamalar",
+    "prf.files": "📁 Fayllarim",
+    "prf.done": "Tayyor",
+    "prf.progress": "Jarayonda",
+    "prf.waiting": "Kutilmoqda",
+    "prf.r1": "Kitob",
+    "prf.r2": "Hujjat",
+    "prf.r3": "Subtitr",
+    "prf.activity": "📊 Faollik",
+    "prf.last12w": "Oxirgi 12 hafta"
+  },
+  ru: {
+    "nav.home": "Главная",
+    "nav.services": "Услуги",
+    "nav.dashboard": "Панель",
+    "nav.order": "Заказ",
+    "nav.profile": "Профиль",
+    "nav.cta": "Начать",
+    "hero.badge": "Платформа перевода на базе ИИ",
+    "hero.title": "Переводите Всё. Понимайте Всё.",
+    "hero.subtitle": "ORTOLA — умная платформа для быстрого и точного перевода книг, документов и текстов. Узбекский, русский и 40+ языков.",
+    "hero.cta1": "Начать Сейчас",
+    "hero.cta2": "Наши Услуги",
+    "hero.stat1": "Пользователей",
+    "hero.stat2": "Переводов",
+    "hero.stat3": "Языков",
+    "hero.stat4": "Рейтинг",
+    "how.tag": "КАК ЭТО РАБОТАЕТ",
+    "how.title": "Готово за 4 шага",
+    "how.sub": "Простой и быстрый процесс — загрузите документ и получите готовый перевод.",
+    "how.s1.title": "Загрузите файл",
+    "how.s1.desc": "Загрузите файл в формате PDF, DOCX, TXT или другом формате.",
+    "how.s2.title": "Выберите язык",
+    "how.s2.desc": "Выберите исходный и целевой язык из 40+ вариантов.",
+    "how.s3.title": "ИИ переводит",
+    "how.s3.desc": "Наша умная система ИИ качественно переводит текст.",
+    "how.s4.title": "Скачайте",
+    "how.s4.desc": "Скачайте готовый перевод в оригинальном формате.",
+    "srv.tag": "УСЛУГИ",
+    "srv.title": "Все Услуги Перевода",
+    "srv.sub": "Профессиональные услуги перевода для любого типа текста.",
+    "srv.book.title": "Перевод Книг",
+    "srv.book.desc": "Романы, научные, фантастика — полный перевод книг любого жанра.",
+    "srv.doc.title": "Перевод Документов",
+    "srv.doc.desc": "Юридические, медицинские, деловые документы с точностью.",
+    "srv.text.title": "Перевод Текстов",
+    "srv.text.desc": "Быстрый перевод коротких текстов, сообщений и контента.",
+    "srv.sub.title": "Перевод Субтитров",
+    "srv.sub.desc": "Перевод файлов субтитров SRT/VTT для фильмов и видео.",
+    "srv.from": "от",
+    "srv.perword": "/ слово",
+    "srv.perpage": "/ стр",
+    "srv.per500": "/ 500 слов",
+    "srv.permin": "/ мин",
+    "srv.order": "Заказать →",
+    "srv.popular": "🔥 Популярное",
+    "ai.tag": "ИИ ПЕРЕВОДЧИК",
+    "ai.title": "Мгновенный ИИ Перевод",
+    "ai.sub": "Введите текст и получите перевод мгновенно. Это только демо — для полного сервиса сделайте заказ.",
+    "ai.source": "Исходный текст",
+    "ai.target": "Перевод",
+    "ai.translate": "⚡ Перевести",
+    "ai.note": "⚠️ Это демо перевод. Для профессионального перевода оформите заказ.",
+    "test.tag": "ОТЗЫВЫ",
+    "test.title": "Что Говорят Клиенты",
+    "test.t1.text": "\"Мой роман был переведён на узбекский язык через ORTOLA превосходно. Высокое качество, точно в срок!\"",
+    "test.t1.name": "Азиза Рахимова",
+    "test.t1.role": "Писательница, Ташкент",
+    "test.t2.text": "\"Нам нужно было перевести деловые контракты на 3 языка. ORTOLA выполнил это быстро и профессионально.\"",
+    "test.t2.name": "Мурод Хасанов",
+    "test.t2.role": "Владелец бизнеса",
+    "test.t3.text": "\"Спасибо за услугу перевода субтитров! Наши фильмы теперь доступны на узбекском и русском языках.\"",
+    "test.t3.name": "Зилола Умарова",
+    "test.t3.role": "Создатель контента",
+    "lb.tag": "РЕЙТИНГ",
+    "lb.title": "Самые Активные Пользователи",
+    "lb.sub": "Пользователи с наибольшим количеством XP получают призы каждую неделю.",
+    "cta.tag": "НАЧНИТЕ СЕЙЧАС",
+    "cta.title": "Начните Своё Путешествие в Переводе",
+    "cta.sub": "Присоединяйтесь к тысячам пользователей на платформе ORTOLA.",
+    "cta.btn1": "Сделать Заказ",
+    "cta.btn2": "Открыть Панель",
+    "footer.desc": "ORTOLA — профессиональная платформа перевода. Сочетание ИИ и человеческой экспертизы.",
+    "footer.services": "УСЛУГИ",
+    "footer.company": "КОМПАНИЯ",
+    "footer.support": "ПОДДЕРЖКА",
+    "footer.about": "О нас",
+    "footer.blog": "Блог",
+    "footer.careers": "Вакансии",
+    "footer.contact": "Контакты",
+    "footer.faq": "FAQ",
+    "footer.privacy": "Конфиденциальность",
+    "footer.terms": "Условия",
+    "footer.api": "API",
+    "footer.copy": "© 2025 ORTOLA. Все права защищены.",
+    "dash.tag": "ПАНЕЛЬ УПРАВЛЕНИЯ",
+    "dash.title": "Ваш Прогресс",
+    "dash.sub": "Повышайте уровни, собирайте награды и станьте лучшим переводчиком.",
+    "dash.translator": "Переводчик",
+    "dash.xp": "Очки Опыта",
+    "dash.streak": "Дневная серия",
+    "dash.orders": "Заказы",
+    "dash.langs": "Языков",
+    "dash.path": "🗺️ Путь Обучения",
+    "dash.badges": "🏅 Достижения",
+    "lvl.beginner": "Начинающий",
+    "lvl.basic": "Статьи",
+    "lvl.intermediate": "Книги",
+    "lvl.advanced": "Профи",
+    "lvl.expert": "Эксперт",
+    "bdg.first": "Первый",
+    "bdg.streak7": "7 Дней🔥",
+    "bdg.speed": "Скоростной",
+    "bdg.poly": "Полиглот",
+    "bdg.book": "Книголюб",
+    "bdg.locked": "Закрыто",
+    "ord.tag": "ЗАКАЗ",
+    "ord.title": "Оформить Заказ",
+    "ord.sub": "Оформите заказ на перевод в 5 простых шагах.",
+    "ord.step1": "Язык",
+    "ord.step2": "Файл",
+    "ord.step3": "Примечание",
+    "ord.step4": "Цена",
+    "ord.step5": "Готово",
+    "ord.s1.title": "Выберите Язык",
+    "ord.s1.sub": "С какого языка и на какой нужно перевести?",
+    "ord.s2.title": "Загрузите Файл",
+    "ord.s2.sub": "Загрузите файл, который нужно перевести.",
+    "ord.s2.click": "Нажмите для выбора файла",
+    "ord.s2.formats": "PDF, DOCX, TXT, SRT, XLSX — макс 50MB",
+    "ord.s2.type": "Тип услуги",
+    "ord.s3.title": "Дополнительная Информация",
+    "ord.s3.sub": "Укажите стиль перевода и срок.",
+    "ord.s3.style": "Стиль перевода",
+    "ord.s3.style.formal": "Официальный",
+    "ord.s3.style.casual": "Обычный",
+    "ord.s3.style.technical": "Технический",
+    "ord.s3.style.literary": "Литературный",
+    "ord.s3.deadline": "Срок",
+    "ord.s3.notes": "Примечания",
+    "ord.s3.placeholder": "Особые требования, контекст или дополнительная информация...",
+    "ord.s4.title": "Расчёт Цены",
+    "ord.s4.sub": "Примерная стоимость вашего заказа.",
+    "ord.s4.base": "Базовый перевод",
+    "ord.s4.urgency": "Срочность",
+    "ord.s4.discount": "Скидка (10%)",
+    "ord.s4.total": "Итого",
+    "ord.s4.fast": "⚡ Быстрая доставка",
+    "ord.s4.est": "Готово примерно за 24-48 часов",
+    "ord.s5.title": "Заказ Принят! 🎉",
+    "ord.s5.sub": "Ваш заказ успешно отправлен. Мы свяжемся с вами в ближайшее время.",
+    "ord.s5.dash": "Перейти на панель",
+    "ord.s5.new": "Новый Заказ",
+    "ord.back": "← Назад",
+    "ord.next": "Продолжить",
+    "prf.tag": "ПРОФИЛЬ",
+    "prf.title": "Мой Профиль",
+    "prf.bio": "Профессиональный переводчик · 6 языков",
+    "prf.orders": "Заказы",
+    "prf.xp": "XP",
+    "prf.streak": "Серия",
+    "prf.neworder": "Новый Заказ",
+    "prf.settings": "Настройки",
+    "prf.files": "📁 Мои Файлы",
+    "prf.done": "Готово",
+    "prf.progress": "В процессе",
+    "prf.waiting": "Ожидание",
+    "prf.r1": "Книги",
+    "prf.r2": "Документы",
+    "prf.r3": "Субтитры",
+    "prf.activity": "📊 Активность",
+    "prf.last12w": "Последние 12 недель"
+  },
+  en: {
+    "nav.home": "Home",
+    "nav.services": "Services",
+    "nav.dashboard": "Dashboard",
+    "nav.order": "Order",
+    "nav.profile": "Profile",
+    "nav.cta": "Get Started",
+    "hero.badge": "AI-powered translation platform",
+    "hero.title": "Translate Anything. Understand Everything.",
+    "hero.subtitle": "ORTOLA is a smart platform for fast and accurate translation of books, documents, and texts. Uzbek, Russian and 40+ languages.",
+    "hero.cta1": "Start Now",
+    "hero.cta2": "View Services",
+    "hero.stat1": "Users",
+    "hero.stat2": "Translations",
+    "hero.stat3": "Languages",
+    "hero.stat4": "Rating",
+    "how.tag": "HOW IT WORKS",
+    "how.title": "Ready in 4 steps",
+    "how.sub": "A simple and fast process — upload your document and receive your ready translation.",
+    "how.s1.title": "Upload File",
+    "how.s1.desc": "Upload your file in PDF, DOCX, TXT or other format.",
+    "how.s2.title": "Choose Language",
+    "how.s2.desc": "Select source and target language from 40+ options.",
+    "how.s3.title": "AI Translates",
+    "how.s3.desc": "Our smart AI system translates the text with high quality.",
+    "how.s4.title": "Download",
+    "how.s4.desc": "Download the ready translation in the original format.",
+    "srv.tag": "SERVICES",
+    "srv.title": "All Translation Services",
+    "srv.sub": "Professional translation services for any type of text.",
+    "srv.book.title": "Book Translation",
+    "srv.book.desc": "Novels, scientific, fiction — complete translation of books in any genre.",
+    "srv.doc.title": "Document Translation",
+    "srv.doc.desc": "Legal, medical, business documents translated with precision.",
+    "srv.text.title": "Text Translation",
+    "srv.text.desc": "Quick translation for short texts, messages and content.",
+    "srv.sub.title": "Subtitle Translation",
+    "srv.sub.desc": "SRT/VTT subtitle file translation for films and videos.",
+    "srv.from": "from",
+    "srv.perword": "/ word",
+    "srv.perpage": "/ page",
+    "srv.per500": "/ 500 words",
+    "srv.permin": "/ min",
+    "srv.order": "Order Now →",
+    "srv.popular": "🔥 Popular",
+    "ai.tag": "AI TRANSLATOR",
+    "ai.title": "Instant AI Translation",
+    "ai.sub": "Type text and get a translation instantly. This is just a demo — place an order for full service.",
+    "ai.source": "Source text",
+    "ai.target": "Translation",
+    "ai.translate": "⚡ Translate",
+    "ai.note": "⚠️ This is a demo translation. For professional translation, place an order.",
+    "test.tag": "REVIEWS",
+    "test.title": "What Our Clients Say",
+    "test.t1.text": "\"My novel was translated into Uzbek through ORTOLA magnificently. High quality, right on deadline!\"",
+    "test.t1.name": "Aziza Rahimova",
+    "test.t1.role": "Author, Tashkent",
+    "test.t2.text": "\"We needed to translate business contracts into 3 languages. ORTOLA did it quickly and professionally.\"",
+    "test.t2.name": "Murod Xasanov",
+    "test.t2.role": "Business Owner",
+    "test.t3.text": "\"Thanks for the subtitle translation service! Our films are now available in Uzbek and Russian too.\"",
+    "test.t3.name": "Zilola Umarova",
+    "test.t3.role": "Content Creator",
+    "lb.tag": "LEADERBOARD",
+    "lb.title": "Most Active Users",
+    "lb.sub": "Users with the most XP receive prizes every week.",
+    "cta.tag": "START TODAY",
+    "cta.title": "Start Your Translation Journey",
+    "cta.sub": "Join thousands of users on the ORTOLA platform.",
+    "cta.btn1": "Place an Order",
+    "cta.btn2": "Open Dashboard",
+    "footer.desc": "ORTOLA — professional translation platform. The combination of AI and human expertise.",
+    "footer.services": "SERVICES",
+    "footer.company": "COMPANY",
+    "footer.support": "SUPPORT",
+    "footer.about": "About Us",
+    "footer.blog": "Blog",
+    "footer.careers": "Careers",
+    "footer.contact": "Contact",
+    "footer.faq": "FAQ",
+    "footer.privacy": "Privacy",
+    "footer.terms": "Terms",
+    "footer.api": "API",
+    "footer.copy": "© 2025 ORTOLA. All rights reserved.",
+    "dash.tag": "DASHBOARD",
+    "dash.title": "Your Progress",
+    "dash.sub": "Level up, collect rewards and become a top translator.",
+    "dash.translator": "Translator",
+    "dash.xp": "Experience Points",
+    "dash.streak": "Daily streak",
+    "dash.orders": "Orders",
+    "dash.langs": "Languages",
+    "dash.path": "🗺️ Learning Path",
+    "dash.badges": "🏅 Achievements",
+    "lvl.beginner": "Beginner",
+    "lvl.basic": "Articles",
+    "lvl.intermediate": "Books",
+    "lvl.advanced": "Pro",
+    "lvl.expert": "Expert",
+    "bdg.first": "First Trans",
+    "bdg.streak7": "7 Days🔥",
+    "bdg.speed": "Speedster",
+    "bdg.poly": "Polyglot",
+    "bdg.book": "Book Lover",
+    "bdg.locked": "Locked",
+    "ord.tag": "ORDER",
+    "ord.title": "Place Your Order",
+    "ord.sub": "Formalize your translation order in 5 simple steps.",
+    "ord.step1": "Language",
+    "ord.step2": "File",
+    "ord.step3": "Notes",
+    "ord.step4": "Price",
+    "ord.step5": "Done",
+    "ord.s1.title": "Choose Language",
+    "ord.s1.sub": "Which language do you need to translate from and to?",
+    "ord.s2.title": "Upload File",
+    "ord.s2.sub": "Upload the file that needs to be translated.",
+    "ord.s2.click": "Click to select a file",
+    "ord.s2.formats": "PDF, DOCX, TXT, SRT, XLSX — max 50MB",
+    "ord.s2.type": "Service type",
+    "ord.s3.title": "Additional Information",
+    "ord.s3.sub": "Specify translation style and deadline.",
+    "ord.s3.style": "Translation style",
+    "ord.s3.style.formal": "Formal",
+    "ord.s3.style.casual": "Casual",
+    "ord.s3.style.technical": "Technical",
+    "ord.s3.style.literary": "Literary",
+    "ord.s3.deadline": "Deadline",
+    "ord.s3.notes": "Notes",
+    "ord.s3.placeholder": "Special requirements, context, or additional info...",
+    "ord.s4.title": "Price Calculation",
+    "ord.s4.sub": "Estimated cost for your order.",
+    "ord.s4.base": "Base translation",
+    "ord.s4.urgency": "Urgency",
+    "ord.s4.discount": "Discount (10%)",
+    "ord.s4.total": "Total",
+    "ord.s4.fast": "⚡ Fast delivery",
+    "ord.s4.est": "Ready in approximately 24-48 hours",
+    "ord.s5.title": "Order Received! 🎉",
+    "ord.s5.sub": "Your order was successfully sent. We will contact you shortly.",
+    "ord.s5.dash": "Go to Dashboard",
+    "ord.s5.new": "New Order",
+    "ord.back": "← Back",
+    "ord.next": "Continue",
+    "prf.tag": "PROFILE",
+    "prf.title": "My Profile",
+    "prf.bio": "Professional translator · 6 languages",
+    "prf.orders": "Orders",
+    "prf.xp": "XP",
+    "prf.streak": "Streak",
+    "prf.neworder": "New Order",
+    "prf.settings": "Settings",
+    "prf.files": "📁 My Files",
+    "prf.done": "Done",
+    "prf.progress": "In progress",
+    "prf.waiting": "Waiting",
+    "prf.r1": "Books",
+    "prf.r2": "Documents",
+    "prf.r3": "Subtitles",
+    "prf.activity": "📊 Activity",
+    "prf.last12w": "Last 12 weeks"
+  }
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let currentLang = 'uz';
+let currentPage = 'home';
+let currentOrderStep = 1;
+const totalOrderSteps = 5;
+let isDark = false;
+let selectedOrderLang = 'en';
+
+// ─── i18n ───────────────────────────────────────────────────────────────────
+function t(key) {
+  return (i18n[currentLang] && i18n[currentLang][key]) || i18n['en'][key] || key;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === lang.toUpperCase());
+  });
+  applyTranslations();
+}
+
+// ─── THEME ──────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.classList.toggle('dark', isDark);
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+}
+
+// ─── PAGES ──────────────────────────────────────────────────────────────────
+function showPage(page) {
+  ['home','dashboard','order','profile'].forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if(el) el.style.display = (p===page) ? '' : 'none';
+  });
+  currentPage = page;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(page==='order') resetOrder();
+  setTimeout(observeReveal,100);
+}
+
+// ─── SCROLL ─────────────────────────────────────────────────────────────────
+function scrollTo(selector) {
+  showPage('home');
+  setTimeout(() => {
+    const el = document.querySelector(selector);
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  }, 100);
+}
+
+// ─── MOBILE MENU ─────────────────────────────────────────────────────────────
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ─── ORDER FLOW ──────────────────────────────────────────────────────────────
+function updateOrderProgress() {
+  for(let i=1;i<=totalOrderSteps;i++) {
+    const el = document.getElementById('opstep'+i);
+    if(!el) continue;
+    el.classList.remove('active','completed');
+    if(i<currentOrderStep) el.classList.add('completed');
+    else if(i===currentOrderStep) el.classList.add('active');
+    const circle = el.querySelector('.op-circle');
+    if(circle) circle.textContent = i<currentOrderStep ? '✓' : i;
+  }
+  document.querySelectorAll('.order-step-content').forEach((el,idx) => {
+    el.classList.toggle('active', idx+1===currentOrderStep);
+  });
+  const backBtn = document.getElementById('orderBackBtn');
+  const nextBtn = document.getElementById('orderNextBtn');
+  const nav = document.getElementById('orderNav');
+  if(backBtn) backBtn.style.visibility = currentOrderStep>1 ? 'visible' : 'hidden';
+  if(nextBtn) {
+    if(currentOrderStep===4) nextBtn.innerHTML = '✓ <span>'+t('ord.next')+'</span>';
+    else nextBtn.innerHTML = '<span>'+t('ord.next')+'</span> →';
+  }
+  if(nav) nav.style.display = currentOrderStep===5 ? 'none' : '';
+}
+
+function orderNext() {
+  if(currentOrderStep<totalOrderSteps) {
+    currentOrderStep++;
+    updateOrderProgress();
+  }
+}
+
+function orderPrev() {
+  if(currentOrderStep>1) {
+    currentOrderStep--;
+    updateOrderProgress();
+  }
+}
+
+function resetOrder() {
+  currentOrderStep = 1;
+  updateOrderProgress();
+}
+
+function selectLang(el, lang) {
+  el.closest('.lang-options').querySelectorAll('.lang-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOrderLang = lang;
+}
+
+function handleFile(input) {
+  if(input.files.length>0) {
+    const icon = document.getElementById('uploadIcon');
+    const title = document.getElementById('uploadTitle');
+    if(icon) icon.textContent = '✅';
+    if(title) title.textContent = input.files[0].name;
+  }
+}
+
+function showLevelInfo(level) {
+  const msgs = {uz:{beginner:'Boshlang\'ich daraja — bajarildi! ✓',basic:'Maqolalar daraja — bajarildi! ✓',intermediate:'Siz hozir bu darajadasiz! Davom eting 💪',advanced:'Bu daraja qulflangan. Ko\'proq XP to\'plang!'},ru:{beginner:'Начальный уровень — завершён! ✓',basic:'Уровень Статьи — завершён! ✓',intermediate:'Вы сейчас на этом уровне! Продолжайте 💪',advanced:'Этот уровень заблокирован. Накопите больше XP!'},en:{beginner:'Beginner level — completed! ✓',basic:'Articles level — completed! ✓',intermediate:'You are on this level now! Keep going 💪',advanced:'This level is locked. Collect more XP!'}};
+  const m = msgs[currentLang]||msgs.en;
+  alert(m[level]||'Locked! Collect more XP.');
+}
+
+// ─── AI TRANSLATE ─────────────────────────────────────────────────────────────
+let aiTranslating = false;
+
+async function doAITranslate() {
+  if(aiTranslating) return;
+  const input = document.getElementById('aiInput').value.trim();
+  if(!input) return;
+  const output = document.getElementById('aiOutput');
+  const from = document.getElementById('aiFromLang').value;
+  const to = document.getElementById('aiToLang').value;
+  aiTranslating = true;
+  output.value = ''; 
+  output.placeholder = '⏳ Translating...';
+
+  try {
+    const langNames = {uz:'Uzbek',ru:'Russian',en:'English',fr:'French',de:'German'};
+    const fromName = langNames[from]||from;
+    const toName = langNames[to]||to;
+    
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{
+          role:'user',
+          content:`Translate the following text from ${fromName} to ${toName}. Return ONLY the translated text, nothing else, no explanations:\n\n${input}`
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(i=>i.text||'').join('') || 'Translation error.';
+    output.placeholder = 'Translation will appear here...';
+    // Typewriter effect
+    let i=0;
+    output.value='';
+    const type = setInterval(()=>{
+      if(i<text.length){output.value+=text[i++];}
+      else{clearInterval(type);aiTranslating=false;}
+    },12);
+  } catch(e) {
+    output.placeholder = 'Translation will appear here...';
+    output.value = '[Demo] '+input+' → [translated to '+to+']';
+    aiTranslating = false;
+  }
+}
+
+function clearOutput() {
+  document.getElementById('aiOutput').value='';
+}
+
+function swapLangs() {
+  const from = document.getElementById('aiFromLang');
+  const to = document.getElementById('aiToLang');
+  const input = document.getElementById('aiInput');
+  const output = document.getElementById('aiOutput');
+  const tmp = from.value; from.value=to.value; to.value=tmp;
+  const tmpText = input.value; input.value=output.value; output.value=tmpText;
+}
+
+// ─── REVEAL ON SCROLL ─────────────────────────────────────────────────────────
+function observeReveal() {
+  const els = document.querySelectorAll('.reveal:not(.visible)');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');} });
+  }, {threshold:0.1});
+  els.forEach(e=>obs.observe(e));
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+  updateOrderProgress();
+  observeReveal();
+
+  // Animate stats counter
+  const statEls = document.querySelectorAll('.hero-stat-num');
+  // (nums already set via HTML)
+
+  // Sticky nav shadow
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.boxShadow =
+      window.scrollY > 20 ? 'var(--shadow-md)' : 'none';
+  });
+});
+</script>
+</body>
+</html>
